@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UN Policy Advocacy Tracking System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #07192f 0%, #0a2340 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #07192f 0%, #33e0c4 100%);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .status-bar {
+            background: #ffca58;
+            color: #07192f;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: #33e0c4;
+            color: #07192f;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(51, 224, 196, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(51, 224, 196, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: #33e0c4;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .metric {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffca58;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #b0b0b0;
+        }
+
+        .form-container {
+            display: none;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(51, 224, 196, 0.2);
+        }
+
+        .form-container.active {
+            display: block;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #33e0c4;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            padding: 0.75rem;
+            border: 1px solid rgba(51, 224, 196, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-input::placeholder, .form-textarea::placeholder {
+            color: #b0b0b0;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary {
+            background: #33e0c4;
+            color: #07192f;
+        }
+
+        .btn-primary:hover {
+            background: #ffca58;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(51, 224, 196, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(51, 224, 196, 0.1);
+        }
+
+        .search-container {
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid rgba(51, 224, 196, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 1rem;
+        }
+
+        .table-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            overflow-x: auto;
+            border: 1px solid rgba(51, 224, 196, 0.2);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(51, 224, 196, 0.2);
+        }
+
+        .data-table th {
+            background: rgba(51, 224, 196, 0.1);
+            color: #33e0c4;
+            font-weight: 600;
+        }
+
+        .data-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: rgba(51, 224, 196, 0.2);
+            color: #33e0c4;
+        }
+
+        .status-pending {
+            background: rgba(255, 202, 88, 0.2);
+            color: #ffca58;
+        }
+
+        .status-completed {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+            border-top: 1px solid rgba(51, 224, 196, 0.2);
+            color: #b0b0b0;
+            font-size: 0.9rem;
+        }
+
+        .contact-log {
+            display: none;
+        }
+
+        .contact-log.active {
+            display: block;
+        }
+
+        .contact-entry {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #33e0c4;
+        }
+
+        .contact-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .contact-name {
+            font-weight: 600;
+            color: #33e0c4;
+        }
+
+        .contact-date {
+            font-size: 0.9rem;
+            color: #b0b0b0;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .main-container {
+                padding: 0 1rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="status-bar">IGM Status: System Active - Ruby Guillen NASW-CA UN Policy Advocacy Program</div>
+        <div class="nav-container">
+            <div class="logo">UN Policy Advocacy Tracker</div>
+            <nav class="nav-links">
+                <a href="#" class="nav-link active" onclick="showSection('dashboard')">Dashboard</a>
+                <a href="#" class="nav-link" onclick="showSection('intake')">Intake Form</a>
+                <a href="#" class="nav-link" onclick="showSection('contact')">Contact Log</a>
+                <a href="#" class="nav-link" onclick="showSection('search')">Search</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">👥</div>
+                        <div class="card-title">Active Delegates</div>
+                    </div>
+                    <div class="metric">147</div>
+                    <div class="metric-label">Across 52 Member Nations</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">📋</div>
+                        <div class="card-title">Resolutions Tracked</div>
+                    </div>
+                    <div class="metric">89</div>
+                    <div class="metric-label">23 Pending Review</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">🗳️</div>
+                        <div class="card-title">Voting Records</div>
+                    </div>
+                    <div class="metric">342</div>
+                    <div class="metric-label">Updated This Month</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">📊</div>
+                        <div class="card-title">Submissions</div>
+                    </div>
+                    <div class="metric">67</div>
+                    <div class="metric-label">Multilateral Submissions</div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <h3>Recent Activity</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Country</th>
+                            <th>Delegate</th>
+                            <th>Action</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2024-01-15</td>
+                            <td>United States</td>
+                            <td>Ambassador Johnson</td>
+                            <td>Resolution A/78/123 Vote</td>
+                            <td><span class="status-badge status-completed">Completed</span></td>
+                        </tr>
+                        <tr>
+                            <td>2024-01-14</td>
+                            <td>Germany</td>
+                            <td>Dr. Mueller</td>
+                            <td>Policy Submission</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td>2024-01-13</td>
+                            <td>Japan</td>
+                            <td>Minister Tanaka</td>
+                            <td>Multilateral Meeting</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Intake Form Section -->
+        <section id="intake" class="section form-container">
+            <h2 style="margin-bottom: 2rem; color: #33e0c4;">New Entry Intake Form</h2>
+            <form id="intakeForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Delegate Name</label>
+                        <input type="text" class="form-input" placeholder="Enter delegate full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Member Nation</label>
+                        <select class="form-select" required>
+                            <option value="">Select Country</option>
+                            <option value="US">United States</option>
+                            <option value="UK">United Kingdom</option>
+                            <option value="DE">Germany</option>
+                            <option value="FR">France</option>
+                            <option value="JP">Japan</option>
+                            <option value="CA">Canada</option>
+                            <option value="AU">Australia</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Delegate Title</label>
+                        <input type="text" class="form-input" placeholder="Ambassador, Minister, etc.">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contact Email</label>
+                        <input type="email" class="form-input" placeholder="delegate@mission.org">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Resolution Number</label>
+                        <input type="text" class="form-input" placeholder="A/78/XXX">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Vote Position</label>
+                        <select class="form-select">
+                            <option value="">Select Position</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                            <option value="abstain">Abstain</option>
+                            <option value="absent">Absent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Submission Type</label>
+                        <select class="form-select">
+                            <option value="">Select Type</option>
+                            <option value="bilateral">Bilateral</option>
+                            <option value="multilateral">Multilateral</option>
+                            <option value="regional">Regional</option>
+                            <option value="committee">Committee</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Priority Level</label>
+                        <select class="form-select">
+                            <option value="">Select Priority</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 2rem;">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-textarea" placeholder="Additional notes and observations..."></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary">Submit Entry</button>
+                    <button type="reset" class="btn btn-secondary">Clear Form</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Contact Log Section -->
+        <section id="contact" class="section contact-log">
+            <h2 style="margin-bottom: 2rem; color: #33e0c4;">Contact Log</h2>
+            <div class="contact-entry">
+                <div class="contact-header">
+                    <div class="contact-name">Ambassador Maria Rodriguez - Spain</div>
+                    <div class="contact-date">January 15, 2024</div>
+                </div>
+                <p>Discussed upcoming human rights resolution. Expressed support for stronger language on children's rights protection. Scheduled follow-up meeting for next week.</p>
+            </div>
+            <div class="contact-entry">
+                <div class="contact-header">
+                    <div class="contact-name">Minister Chen Wei - China</div>
+                    <div class="contact-date">January 14, 2024</div>
+                </div>
+                <p>Brief conversation regarding climate policy alignment. Noted concerns about economic impact provisions. Requested technical briefing document.</p>
+            </div>
+            <div class="contact-entry">
+                <div class="contact-header">
+                    <div class="contact-name">Dr. James MacLeod - Canada</div>
+                    <div class="contact-date">January 13, 2024</div>
+                </div>
+                <p>Collaborative discussion on healthcare access resolution. Agreed to co-sponsor amendment for rural healthcare provisions. Very positive engagement.</p>
+            </div>
+        </section>
+
+        <!-- Search Section -->
+        <section id="search" class="section" style="display: none;">
+            <h2 style="margin-bottom: 2rem; color: #33
